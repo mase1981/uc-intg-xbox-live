@@ -73,12 +73,13 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
 
-      - name: Extract build archives
+      - name: Extract build archives from downloaded files
         run: |
-          for D in * do if [ -d "${D}" ]; then
-              mv $D/* ./
+          for D in *; do
+            if [ -d "${D}" ]; then
+              mv "${D}"/* ./
             fi
-          done;
+          done
 
       - name: Create hash file
         run: |
