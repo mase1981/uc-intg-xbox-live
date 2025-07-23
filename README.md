@@ -18,21 +18,24 @@ This integration connects to the Xbox Live services to see your "presence" and u
 
 1.  An Unfolded Circle Remote (RC2 or RC3).
 2.  An Xbox One, Xbox Series S, or Xbox Series X console.
-3.  You will need your console's **Xbox Live Device ID**. To find it, go to `Settings > Devices & connections > Remote features` on your Xbox.
+3.  Your console's **Xbox Live Device ID**. To find it, go to `Settings > Devices & connections > Remote features` on your Xbox.
+4.  An active **internet connection** for the machine running this integration, as it needs to communicate with Xbox Live servers.
 
-## Installation (Docker - Recommended)
+## Installation (Docker)
 
-This is the easiest and most stable way to run the integration on a home server or Synology NAS.
+The recommended way to run this integration is using Docker on a home server or Synology NAS.
 
-1.  **Download Files**: Clone or download the project files from this GitHub repository. Make sure you have both `docker-compose.yml` and the `Dockerfile`.
-2.  **Run Docker Compose**: From a terminal in the project's root directory, run the following command:
+### Method 1: Docker Compose (Easiest)
+
+1.  **Download Files**: Clone or download the project files from this GitHub repository.
+2.  **Run Docker Compose**: From a terminal in the project's root directory, run the following single command:
     ```bash
     docker-compose up --build -d
     ```
 3.  The integration will build, start, and be discoverable on your network.
 
 #### Docker Compose File
-The `docker-compose.yml` is pre-configured for easy use:
+The `docker-compose.yml` is pre-configured for your convenience:
 ```yaml
 version: '3.8'
 services:
@@ -42,11 +45,34 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      - UC_INTEGRATION_HTTP_PORT=9094
+      # Sets a non-standard port to avoid conflicts
+      - UC_INTEGRATION_HTTP_PORT=9098
       - UC_CONFIG_HOME=/config
     volumes:
       - ./config:/config
 ```
+> **Note on Port**: This integration uses port **9098** by default to avoid conflicts with the Unfolded Circle remote's default port (9090). If port 9098 is already in use on your network, you can edit the `docker-compose.yml` file and change `9098` to another unused port.
+
+### Method 2: Manual Docker Run (Single Command)
+
+If you don't use `docker-compose`, you can build and run the container with these commands.
+
+1.  **Build the Image**: First, navigate to the project's root directory in your terminal and build the Docker image:
+    ```bash
+    docker build -t uc-intg-xbox-live .
+    ```
+
+2.  **Run the Container**: After the build is complete, use the command for your operating system to run the container.
+
+    * **For Linux, macOS, or Windows PowerShell:**
+        ```bash
+        docker run -d --name uc-intg-xbox-live --network host -e "UC_INTEGRATION_HTTP_PORT=9098" -v "$(pwd)/config:/config" --restart unless-stopped uc-intg-xbox-live
+        ```
+
+    * **For Windows Command Prompt (cmd.exe):**
+        ```bash
+        docker run -d --name uc-intg-xbox-live --network host -e "UC_INTEGRATION_HTTP_PORT=9098" -v "%cd%/config:/config" --restart unless-stopped uc-intg-xbox-live
+        ```
 
 ## Configuration
 
