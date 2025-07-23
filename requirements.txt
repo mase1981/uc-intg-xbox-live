@@ -1,0 +1,4 @@
+ucapi==0.3.1
+xbox-webapi @ git+https://github.com/OpenXbox/xbox-webapi-python.git
+httpx
+certifi
