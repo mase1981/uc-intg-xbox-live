@@ -1,35 +1,20 @@
 {
-    "driver_id": "xbox-live",
-    "name": { "en": "Xbox Live" },
-    "icon": "uc:gamepad-modern",
-    "description": { "en": "Displays the current game being played on your Xbox." },
-    "version": "1.0.0",
-    "developer": { "name": "Meir Miyara" },
-    "min_core_api": "0.3.1",
-    "copyright": { "en": "Copyright (c) 2025, Meir Miyara" },
-    "license": "MIT",
-    "categories": [ "media_player" ],
-    "discovery": {
-        "zeroconf": [
-            {
-                "type": "_unfoldedcircle-integration._tcp.local.",
-                "name": "uc-intg-xbox-live._unfoldedcircle-integration._tcp.local."
-            }
-        ]
-    },
-    "setup": {
-        "type": "python",
-        "entry_point": "uc_intg_xbox_live.driver"
-    },
-    "setup_data_schema": {
-        "title": { "en": "Xbox Live Configuration" },
-        "settings": [
-          {
-            "id": "liveid",
-            "label": { "en": "Xbox Live Device ID" },
-            "value": { "en": "Found in Settings > Devices & connections > Remote features." },
-            "field": { "text": { "value": "" } }
-          }
-        ]
-    }
+  "driver_id": "uc-intg-xbox-live",
+  "name": { "en": "xBox Live Integration" },
+  "icon": "uc:gamepad-modern",
+  "description": { "en": "Media Card For xBox Live" },
+  "version": "1.0.7",
+  "developer": { "name": "Meir Miyara" },
+  "min_core_api": "0.3.1",
+  "setup_data_schema": {
+    "title": { "en": "xBox Live Integration" },
+    "settings": [
+      {
+        "id": "liveid",
+        "label": { "en": "Xbox Live Device ID" },
+        "value": { "en": "Found in Settings > Devices & connections > Remote features." },
+        "field": { "text": { "value": "" } }
+      }
+    ]
+  }
 }

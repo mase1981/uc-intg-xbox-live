@@ -48,10 +48,7 @@ jobs:
             bash -c \
             "cd /workspace && \
               python -m pip install -r requirements.txt && \
-              pyinstaller --clean --onedir --name intg-${DRIVER_ID} \
-              --collect-all zeroconf \
-              --add-data \"driver.json:. GONE\" \
-              uc_intg_${INTG_NAME}/driver.py"
+              pyinstaller --clean --onedir --name intg-${DRIVER_ID} --collect-all zeroconf uc_intg_${INTG_NAME}/driver.py"
 
       - name: Prepare artifacts
         shell: bash
@@ -61,19 +58,21 @@ jobs:
           mv artifacts/bin/intg-${{ env.DRIVER_ID }} artifacts/bin/driver
           cp driver.json artifacts/
           echo "ARTIFACT_NAME=uc-intg-${{ env.DRIVER_ID }}-${{ env.VERSION }}-aarch64" >> $GITHUB_ENV
-
+          
       - name: Create upload artifact archive
         shell: bash
         run: | 
           tar czvf ${{ env.ARTIFACT_NAME }}.tar.gz -C ${GITHUB_WORKSPACE}/artifacts .
-
+          ls -lah
+          
       - uses: actions/upload-artifact@v4
+        id: upload_artifact
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ env.ARTIFACT_NAME }}.tar.gz
           if-no-files-found: error
           retention-days: 3
-
+            
   release:
     name: Create Release
     runs-on: ubuntu-24.04
@@ -87,11 +86,14 @@ jobs:
 
       - name: Extract build archives from downloaded files
         run: |
-          for D in *; do
-            if [ -d "${D}" ]; then
-              mv "${D}"/* ./
+          ls -R
+          # extract tar.gz build archives from downloaded artifacts
+          # (wrapped in tar from actions/upload-artifact, then extracted into a directory by actions/download-artifact)
+          for D in * 
+            do if [ -d "${D}" ]; then
+              mv $D/* ./
             fi
-          done
+          done;
 
       - name: Create hash file
         run: |
