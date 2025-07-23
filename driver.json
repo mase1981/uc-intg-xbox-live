@@ -1,15 +1,14 @@
 {
-    "driver_id": "uc-intg-xbox-live",
+    "driver_id": "xbox-live",
     "name": { "en": "Xbox Live" },
-      "icon": "uc:gamepad-modern",
+    "icon": "uc:gamepad-modern",
     "description": { "en": "Displays the current game being played on your Xbox." },
     "version": "1.0.0",
     "developer": { "name": "Meir Miyara" },
+    "min_core_api": "0.3.1",
     "copyright": { "en": "Copyright (c) 2025, Meir Miyara" },
     "license": "MIT",
-    "categories": [
-        "media_player"
-    ],
+    "categories": [ "media_player" ],
     "discovery": {
         "zeroconf": [
             {
@@ -22,18 +21,6 @@
         "type": "python",
         "entry_point": "uc_intg_xbox_live.driver"
     },
-    "entities": [
-        {
-            "type": "media_player",
-            "role": "media_player",
-            "name": {
-                "en": "Xbox Live Presence"
-            },
-            "description": {
-                "en": "Shows the current game being played"
-            }
-        }
-    ],
     "setup_data_schema": {
         "title": { "en": "Xbox Live Configuration" },
         "settings": [
