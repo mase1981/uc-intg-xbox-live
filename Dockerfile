@@ -1,15 +1,21 @@
-# Use an official lightweight Python image
-FROM python:3.11-slim
+FROM python:3.11-slim-bullseye
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the project files into the container
-COPY ./pyproject.toml ./
+RUN apt-get update && apt-get install -y git build-essential
+
+COPY driver.json driver.json
+COPY requirements.txt requirements.txt
 COPY ./uc_intg_xbox_live ./uc_intg_xbox_live
 
-# Install the project and its dependencies
-RUN pip install .
+RUN pip3 install --no-cache-dir --upgrade -r requirements.txt
 
-# Command to run when the container starts
-CMD ["python", "-m", "uc_intg_xbox_live.driver"]
+ADD . .
+
+ENV UC_DISABLE_MDNS_PUBLISH="false"
+ENV UC_MDNS_LOCAL_HOSTNAME=""
+ENV UC_INTEGRATION_INTERFACE="0.0.0.0"
+ENV UC_INTEGRATION_HTTP_PORT="9098"
+ENV UC_CONFIG_HOME="/config"
+
+CMD ["python3", "-u", "-m", "uc_intg_xbox.driver"]
