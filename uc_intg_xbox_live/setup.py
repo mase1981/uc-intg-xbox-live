@@ -10,8 +10,8 @@ from ucapi import (
     IntegrationSetupError,
     RequestUserInput,
 )
-from config import XboxLiveConfig
-from auth import XboxAuth
+from .config import XboxLiveConfig
+from .auth import XboxAuth
 
 _LOG = logging.getLogger("XBOX_LIVE_SETUP")
 
