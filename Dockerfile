@@ -15,7 +15,5 @@ ADD . .
 ENV UC_DISABLE_MDNS_PUBLISH="false"
 ENV UC_MDNS_LOCAL_HOSTNAME=""
 ENV UC_INTEGRATION_INTERFACE="0.0.0.0"
-ENV UC_INTEGRATION_HTTP_PORT="9098"
-ENV UC_CONFIG_HOME="/config"
 
 CMD ["python3", "-u", "-m", "uc_intg_xbox_live.driver"]
