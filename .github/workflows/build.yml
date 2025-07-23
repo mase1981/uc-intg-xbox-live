@@ -1,3 +1,5 @@
+# Manual triggered GitHub action to build a distribution binary of the Python integration driver and attach it to a release draft including a hash file
+---
 name: "Build & Draft Release"
 
 on:
@@ -5,24 +7,31 @@ on:
 
 env:
   INTG_NAME: xbox_live
+  # Python version to use in the builder image. See https://hub.docker.com/r/unfoldedcircle/r2-pyinstaller for possible versions.
   PYTHON_VER: 3.11.12-0.3.0
 
 jobs:
   build:
     name: Build Release
     runs-on: ubuntu-24.04
+    #Save version to env output variable to be able to use it in the following release job as a tag
     outputs:
       version: ${{ steps.get-version-and-id.outputs.VERSION }}
       driver_id: ${{ steps.get-version-and-id.outputs.DRIVER_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # History of 200 should be more than enough to calculate commit count since last release tag
+          fetch-depth: 200
 
       - name: Get version and id
+        #Id needed for env output variable
         id: get-version-and-id
         run: |
           echo "VERSION=$(jq .version -r driver.json)" >> $GITHUB_ENV
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_ENV
+          # Save to Github output to later use it in Create Release job
           echo "VERSION=$(jq .version -r driver.json)" >> $GITHUB_OUTPUT
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_OUTPUT
 
@@ -41,8 +50,6 @@ jobs:
               python -m pip install -r requirements.txt && \
               pyinstaller --clean --onedir --name intg-${DRIVER_ID} \
               --collect-all zeroconf \
-              --hidden-import pydantic_core \
-              --hidden-import cryptography \
               --add-data \"driver.json:. GONE\" \
               uc_intg_${INTG_NAME}/driver.py"
 
@@ -78,7 +85,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
 
-      - name: Extract build archives
+      - name: Extract build archives from downloaded files
         run: |
           for D in *; do
             if [ -d "${D}" ]; then
