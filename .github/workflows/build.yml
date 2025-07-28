@@ -65,7 +65,8 @@ jobs:
           if-no-files-found: error
           retention-days: 3
 
-release:
+  # FIX: The entire 'release' block below is indented to be part of 'jobs'
+  release:
     name: Create Release
     runs-on: ubuntu-24.04
     needs: [build]
