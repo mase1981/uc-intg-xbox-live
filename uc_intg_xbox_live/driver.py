@@ -101,6 +101,7 @@ async def connect_and_create_entity():
             ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, gamertag)
             API.configured_entities.add(ENTITY)
             API.available_entities.add(ENTITY)
+            ENTITY.update()
         start_presence_updates()
 
     except Exception as e:
