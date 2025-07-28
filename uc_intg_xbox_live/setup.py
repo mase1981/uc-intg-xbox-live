@@ -24,37 +24,27 @@ class XboxLiveSetup:
 
     async def handle_command(self, request):
         if isinstance(request, DriverSetupRequest):
-            # Adopt the logic from the working Xbox controls integration
             if request.reconfigure or not self.config.tokens:
                 self.config.liveid = request.setup_data.get("liveid", "").strip()
-                if not self.config.liveid:
+                self.config.giantbomb_api_key = request.setup_data.get("giantbomb_api_key", "").strip()
+
+                if not self.config.liveid or not self.config.giantbomb_api_key:
                     return SetupError(IntegrationSetupError.INVALID_INPUT)
 
-                _LOG.info(f"Live ID captured: {self.config.liveid}. Starting new auth flow.")
-
+                _LOG.info(f"Live ID and Giant Bomb Key captured. Starting new auth flow.")
                 ssl_context = ssl.create_default_context(cafile=certifi.where())
                 self.auth_session = httpx.AsyncClient(verify=ssl_context)
-
                 auth_handler = XboxAuth(self.auth_session)
                 auth_url = auth_handler.generate_auth_url()
 
                 return RequestUserInput(
                     {"en": "Xbox Authentication"},
                     [
-                        {
-                            "id": "auth_url",
-                            "label": {"en": "Login URL"},
-                            "field": {"text": {"value": auth_url, "read_only": True}},
-                        },
-                        {
-                            "id": "redirect_url",
-                            "label": {"en": "Paste the full redirect URL here"},
-                            "field": {"text": {"value": ""}},
-                        },
+                        {"id": "auth_url", "label": {"en": "Login URL"}, "field": {"text": {"value": auth_url, "read_only": True}}},
+                        {"id": "redirect_url", "label": {"en": "Paste the full redirect URL here"}, "field": {"text": {"value": ""}}},
                     ]
                 )
             else:
-                # If tokens already exist and this isn't a reconfigure request, just complete the setup.
                 _LOG.info("Configuration already exists. Completing setup.")
                 await self.on_setup_complete()
                 return SetupComplete()
@@ -75,7 +65,6 @@ class XboxLiveSetup:
 
             self.config.tokens = tokens
             await self.config.save(self.api)
-
             await self.on_setup_complete()
             return SetupComplete()
 

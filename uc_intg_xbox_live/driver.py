@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import os
 import httpx
 import ssl
 import certifi
@@ -10,6 +9,7 @@ from xbox.webapi.api.client import XboxLiveClient
 from xbox.webapi.authentication.manager import AuthenticationManager
 from xbox.webapi.authentication.models import OAuth2TokenResponse
 from xbox.webapi.scripts import CLIENT_ID, CLIENT_SECRET
+from xbox.webapi.api.provider.presence.models import PresenceItem
 
 from .config import XboxLiveConfig
 from .setup import XboxLiveSetup
@@ -17,6 +17,7 @@ from .media_player_entity import XboxPresenceMediaPlayer
 
 _LOG = logging.getLogger(__name__)
 UPDATE_INTERVAL_SECONDS = 60
+ARTWORK_CACHE = {}
 
 # Global Objects
 try:
@@ -32,7 +33,37 @@ UPDATE_TASK: asyncio.Task | None = None
 CLIENT: XboxLiveClient | None = None
 HTTP_SESSION: httpx.AsyncClient | None = None
 
-# Logic Functions
+# --- Giant Bomb Artwork Fetcher ---
+async def get_artwork_from_giant_bomb(session: httpx.AsyncClient, game_title: str, api_key: str) -> str | None:
+    if not game_title or not api_key:
+        return "" # Return empty string instead of None
+    
+    if game_title in ARTWORK_CACHE:
+        return ARTWORK_CACHE[game_title]
+
+    _LOG.info(f"Searching Giant Bomb for artwork for '{game_title}'...")
+    search_url = "https://www.giantbomb.com/api/search/"
+    params = {"api_key": api_key, "format": "json", "query": game_title, "resources": "game", "limit": 1}
+    headers = {"User-Agent": "UC-Xbox-Integration"}
+    
+    try:
+        resp = await session.get(search_url, params=params, headers=headers, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get("results"):
+            image_url = data["results"][0].get("image", {}).get("original_url")
+            if image_url:
+                _LOG.info(f"✅ Found artwork: {image_url}")
+                ARTWORK_CACHE[game_title] = image_url
+                return image_url
+        _LOG.warning(f"No artwork found on Giant Bomb for '{game_title}'.")
+    except Exception:
+        _LOG.exception("❌ Error fetching data from Giant Bomb API.")
+    
+    ARTWORK_CACHE[game_title] = "" # Cache failure as empty string
+    return ""
+
+# --- Core Logic ---
 async def on_setup_complete():
     _LOG.info("✅ Setup complete, proceeding to connect.")
     await connect_and_create_entity()
@@ -50,19 +81,15 @@ async def connect_and_create_entity():
         auth_mgr = AuthenticationManager(HTTP_SESSION, CLIENT_ID, CLIENT_SECRET, "")
         auth_mgr.oauth = OAuth2TokenResponse.model_validate(CONFIG.tokens)
         await auth_mgr.refresh_tokens()
-
         CONFIG.tokens = auth_mgr.oauth.model_dump()
         await CONFIG.save(API)
-
         CLIENT = XboxLiveClient(auth_mgr)
         _LOG.info("✅ Successfully authenticated with Xbox Live.")
 
         _LOG.info("Fetching user profile to get gamertag...")
         profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
-
-        # --- THIS IS THE FIX ---
-        # The 'settings' attribute is a list, so we loop through it
-        gamertag = "Xbox User"  # A default fallback name
+        
+        gamertag = "Xbox User"
         for setting in profile.profile_users[0].settings:
             if setting.id == "ModernGamertag":
                 gamertag = setting.value
@@ -70,12 +97,10 @@ async def connect_and_create_entity():
         _LOG.info(f"Gamertag found: {gamertag}")
 
         await API.set_device_state(DeviceStates.CONNECTED)
-
         if not ENTITY:
             ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, gamertag)
             API.configured_entities.add(ENTITY)
             API.available_entities.add(ENTITY)
-
         start_presence_updates()
 
     except Exception as e:
@@ -94,21 +119,42 @@ async def presence_update_loop():
     _LOG.info(f"Starting presence update loop (will refresh every {UPDATE_INTERVAL_SECONDS}s).")
     while True:
         try:
-            if CLIENT:
-                _LOG.info("Fetching Xbox presence...")
-                presence = await CLIENT.presence.get_presence(CLIENT.xuid)
+            if CLIENT and HTTP_SESSION:
+                _LOG.info("Fetching Xbox presence data...")
+                
+                presence_url = f"https://userpresence.xboxlive.com/users/xuid({CLIENT.xuid})"
+                presence_params = {"level": "all"}
+                presence_headers = {"x-xbl-contract-version": "3", "Accept-Language": "en-US"}
+                
+                resp = await CLIENT.session.get(presence_url, params=presence_params, headers=presence_headers)
+                resp.raise_for_status()
+                presence = PresenceItem(**resp.json())
 
-                game_info = {"state": presence.state}
-                if presence.state.lower() == "online" and presence.title_records:
-                    active_title = presence.title_records[0]
-                    game_info["title"] = active_title.name
-                    for item in active_title.display_image:
-                        if item.type == "Icon":
-                            game_info["image"] = item.url
-                            break
+                game_info = {}
+                game_title = None
+
+                # Find the title with placement: 'Full'
+                if presence.devices:
+                    for device in presence.devices:
+                        if device.titles:
+                            for title in device.titles:
+                                if title.placement == "Full":
+                                    game_title = title.name
+                                    _LOG.info(f"✅ Found active game (placement=Full): {game_title}")
+                                    break
+                            if game_title:
+                                break
+                
+                # Determine correct state based on presence and if a game was found
+                if presence.state.lower() == "online":
+                    game_info["state"] = "PLAYING" if game_title else "ON"
                 else:
-                    game_info["title"] = "Home" if presence.state.lower() == "online" else "Offline"
-                    game_info["image"] = None
+                    game_info["state"] = "OFF"
+                
+                game_info["title"] = game_title if game_title else "Home" if presence.state.lower() == "online" else "Offline"
+                
+                # Fetch artwork from Giant Bomb using the correct title
+                game_info["image"] = await get_artwork_from_giant_bomb(HTTP_SESSION, game_title, CONFIG.giantbomb_api_key)
 
                 if ENTITY:
                     await ENTITY.update_presence(game_info)

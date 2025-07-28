@@ -2,41 +2,61 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A standalone integration for the Unfolded Circle Remote that displays the current game or app you are using on your Xbox.
+A standalone integration for the Unfolded Circle Remote that displays the current game you are playing on your xBox, complete with cover art.
 
-This integration connects to the Xbox Live services to see your "presence" and updates a media player entity on your remote in near real-time, showing your gamertag, the game title, and cover art.
+This integration connects to the Xbox Live services to see your "presence" and updates a media player entity on your remote in near real-time, showing your gamertag, the game title, and the game's artwork.
 
+Hope you enjoy this integration, thank you so much - Meir Miyara.
 ## Features
 
-* **Dynamic Entity Name**: The entity is automatically named after your Xbox Gamertag.
-* **Now Playing**: Displays the current Xbox game and its cover art.
+* **Now Playing**: Displays the current Xbox game and its cover art on the media widget.
 * **Real-time Status**: Shows if you are Online, Playing, or Offline.
+* **Dynamic Entity Name**: The entity is automatically named after your Xbox Gamertag.
+* **Artwork by Giant Bomb**: Uses the [Giant Bomb API](https://www.giantbomb.com/api/) to fetch high-quality game artwork.
 * **Standalone**: Does not require any other Xbox integration to be installed.
 * **Easy Setup**: Simple and secure authentication flow with your Microsoft account.
 
+---
+
 ## Prerequisites
 
-1.  An Unfolded Circle Remote (RC2 or RC3).
+1.  An Unfolded Circle Remote 2 or Remote 3.
 2.  An Xbox One, Xbox Series S, or Xbox Series X console.
 3.  Your console's **Xbox Live Device ID**. To find it, go to `Settings > Devices & connections > Remote features` on your Xbox.
-4.  An active **internet connection** for the machine running this integration, as it needs to communicate with Xbox Live servers.
+4.  A **Giant Bomb API Key**. You can get a free key by creating an account on the [Giant Bomb API page](https://www.giantbomb.com/api/).
+5.  An active **internet connection** for the device running this integration.
 
-## Installation (Docker)
+---
 
-The recommended way to run this integration is using Docker on a home server or Synology NAS.
+## Installation
 
-### Method 1: Docker Compose (Easiest)
+You can run this integration in two ways: as a `tar.gz` archive on an Unfolded Circle Hub, or as a Docker container on a home server.
 
-1.  **Download Files**: Clone or download the project files from this GitHub repository.
-2.  **Run Docker Compose**: From a terminal in the project's root directory, run the following single command:
+### Method 1: Manual Installation (`.tar.gz`)
+
+This is the recommended method for users running the Unfolded Circle Hub software.
+
+1.  Go to the [**Releases**](https://github.com/mase1981/uc-intg-xbox-live/releases) page of this repository.
+2.  Download the latest `uc-intg-xbox-live-x.x.x-aarch64.tar.gz` file and the corresponding `.hash` file.
+3.  On your Unfolded Circle remote or web configurator, go to `Settings > Integrations > + Add New`.
+4.  Select **"Install from file (.tar.gz)"** and upload the archive you downloaded.
+5.  The integration will install and become discoverable.
+
+### Method 2: Docker Installation
+
+This is the recommended method for users with a home server or Synology NAS.
+
+1.  **Download Files**: Clone or download the `docker-compose.yml` file from this GitHub repository.
+2.  **Run Docker Compose**: From a terminal in the same directory as the file, run the following command:
     ```bash
-    docker-compose up --build -d
+    docker-compose up -d
     ```
 3.  The integration will build, start, and be discoverable on your network.
 
-#### Docker Compose File
-The `docker-compose.yml` is pre-configured for your convenience:
-```yaml
+### Docker Compose File
+
+Create a `docker-compose.yml` file with the following content:
+```
 version: '3.8'
 services:
   uc-intg-xbox-live:
@@ -44,43 +64,17 @@ services:
     container_name: uc-intg-xbox-live
     restart: unless-stopped
     network_mode: host
-    environment:
-      # Sets a non-standard port to avoid conflicts
-      - UC_INTEGRATION_HTTP_PORT=9098
-      - UC_CONFIG_HOME=/config
     volumes:
-      - ./config:/config
+      - ./config:/app/uc_intg_xbox_live/config
 ```
-> **Note on Port**: This integration uses port **9098** by default to avoid conflicts with the Unfolded Circle remote's default port (9090). If port 9098 is already in use on your network, you can edit the `docker-compose.yml` file and change `9098` to another unused port.
-
-### Method 2: Manual Docker Run (Single Command)
-
-If you don't use `docker-compose`, you can build and run the container with these commands.
-
-1.  **Build the Image**: First, navigate to the project's root directory in your terminal and build the Docker image:
-    ```bash
-    docker build -t uc-intg-xbox-live .
-    ```
-
-2.  **Run the Container**: After the build is complete, use the command for your operating system to run the container.
-
-    * **For Linux, macOS, or Windows PowerShell:**
-        ```bash
-        docker run -d --name uc-intg-xbox-live --network host -e "UC_INTEGRATION_HTTP_PORT=9098" -v "$(pwd)/config:/config" --restart unless-stopped uc-intg-xbox-live
-        ```
-
-    * **For Windows Command Prompt (cmd.exe):**
-        ```bash
-        docker run -d --name uc-intg-xbox-live --network host -e "UC_INTEGRATION_HTTP_PORT=9098" -v "%cd%/config:/config" --restart unless-stopped uc-intg-xbox-live
-        ```
-
+**Note** on network_mode: host: This is required for the Unfolded Circle remote to discover the integration on your local network.
 ## Configuration
 
 1.  On your Unfolded Circle remote, go to `Settings > Integrations` and tap `+ Add New`.
-2.  The **"Xbox Live"** integration should be listed as a discovered "External" integration. Select it.
-3.  You will be prompted to enter your **Xbox Live Device ID**.
+2.  The **"Xbox Live Presence"** integration should be listed as a discovered integration. Select it.
+3.  You will be prompted to enter your **Xbox Live Device ID** and your **Giant Bomb API Key**.
 4.  Follow the on-screen instructions to log in with your Microsoft account and paste the final redirect URL back into the setup screen.
-5.  Once setup is complete, the entity with your gamertag will be available to add to your user interfaces.
+5.  Once setup is complete, the entity with your gamertag will be available to add to your user interfaces as a **Media Widget**.
 
 ## Development
 
@@ -88,11 +82,12 @@ If you don't use `docker-compose`, you can build and run the container with thes
 2.  Navigate to the directory: `cd uc-intg-xbox-live`
 3.  Create a virtual environment: `python -m venv .venv`
 4.  Activate it: `.\.venv\Scripts\Activate.ps1` (Windows) or `source .venv/bin/activate` (macOS/Linux).
-5.  Install in editable mode: `pip install -e .`
+5.  Install dependencies: `pip install -r requirements.txt`
 6.  Run the driver: `python -m uc_intg_xbox_live.driver`
 
 ## Acknowledgements
-* This project is powered by the [xbox-webapi](https://github.com/OpenXbox/xbox-webapi-python) library.
+
+* This project is powered by the [xbox-webapi-python](https://github.com/OpenXbox/xbox-webapi-python) library.
 * Thanks to [JackJPowell](https://github.com/JackJPowell) for the PSN integration which served as an excellent reference point.
 * Special thanks to the [Unfolded Circle](https://www.unfoldedcircle.com/) team for creating a remote with an open API.
 

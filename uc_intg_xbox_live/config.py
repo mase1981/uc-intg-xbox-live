@@ -16,15 +16,16 @@ class DateTimeEncoder(json.JSONEncoder):
 class XboxLiveConfig:
     liveid: str | None = None
     tokens: dict | None = field(default_factory=dict)
+    giantbomb_api_key: str | None = None
 
     async def load(self, api):
-        """Loads configuration from persistent storage (asynchronous)."""
         config_path = os.path.join(api.config_dir_path, "config.json")
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
                 config_data = json.load(f)
             self.liveid = config_data.get("liveid")
             self.tokens = config_data.get("tokens")
+            self.giantbomb_api_key = config_data.get("giantbomb_api_key")
             _LOG.info("✅ Configuration loaded successfully.")
         except (FileNotFoundError, json.JSONDecodeError):
             _LOG.info("Configuration file not found or is invalid. Starting fresh.")
@@ -32,7 +33,6 @@ class XboxLiveConfig:
             _LOG.exception(f"❌ Failed to load configuration from {config_path}", exc_info=e)
 
     async def save(self, api):
-        """Saves configuration to persistent storage (asynchronous)."""
         config_path = os.path.join(api.config_dir_path, "config.json")
         os.makedirs(api.config_dir_path, exist_ok=True)
         with open(config_path, 'w', encoding='utf-8') as f:

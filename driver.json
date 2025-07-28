@@ -1,18 +1,24 @@
 {
   "driver_id": "uc-intg-xbox-live",
-  "name": { "en": "xBox Live Integration" },
+  "name": { "en": "Xbox Live" },
   "icon": "uc:gamepad-modern",
-  "description": { "en": "Media Card For xBox Live" },
-  "version": "1.0.7",
+  "description": { "en": "Displays your currently playing Xbox game with artwork." },
+  "version": "2.0.0",
   "developer": { "name": "Meir Miyara" },
   "min_core_api": "0.3.1",
   "setup_data_schema": {
-    "title": { "en": "xBox Live Integration" },
+    "title": { "en": "Xbox Live Setup" },
     "settings": [
       {
         "id": "liveid",
         "label": { "en": "Xbox Live Device ID" },
-        "value": { "en": "Found in Settings > Devices & connections > Remote features." },
+        "value": { "en": "Found in your Xbox's Settings > Devices & connections > Remote features." },
+        "field": { "text": { "value": "" } }
+      },
+      {
+        "id": "giantbomb_api_key",
+        "label": { "en": "Giant Bomb API Key" },
+        "value": { "en": "Get a free key from giantbomb.com/api" },
         "field": { "text": { "value": "" } }
       }
     ]
