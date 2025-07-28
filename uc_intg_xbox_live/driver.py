@@ -36,7 +36,7 @@ HTTP_SESSION: httpx.AsyncClient | None = None
 # --- Giant Bomb Artwork Fetcher ---
 async def get_artwork_from_giant_bomb(session: httpx.AsyncClient, game_title: str, api_key: str) -> str | None:
     if not game_title or not api_key:
-        return "" # Return empty string instead of None
+        return ""
     
     if game_title in ARTWORK_CACHE:
         return ARTWORK_CACHE[game_title]
@@ -60,17 +60,17 @@ async def get_artwork_from_giant_bomb(session: httpx.AsyncClient, game_title: st
     except Exception:
         _LOG.exception("❌ Error fetching data from Giant Bomb API.")
     
-    ARTWORK_CACHE[game_title] = "" # Cache failure as empty string
+    ARTWORK_CACHE[game_title] = ""
     return ""
 
 # --- Core Logic ---
 async def on_setup_complete():
     _LOG.info("✅ Setup complete, proceeding to connect.")
-    await connect_and_create_entity()
+    await connect_and_start_client()
 
-async def connect_and_create_entity():
-    global ENTITY, CLIENT, HTTP_SESSION
-    if not CONFIG.tokens or not CONFIG.liveid:
+async def connect_and_start_client():
+    global CLIENT, HTTP_SESSION
+    if not CONFIG.tokens:
         return
 
     _LOG.info("Attempting to authenticate with stored tokens...")
@@ -85,8 +85,22 @@ async def connect_and_create_entity():
         await CONFIG.save(API)
         CLIENT = XboxLiveClient(auth_mgr)
         _LOG.info("✅ Successfully authenticated with Xbox Live.")
+        await API.set_device_state(DeviceStates.CONNECTED)
 
-        _LOG.info("Fetching user profile to get gamertag...")
+    except Exception as e:
+        _LOG.exception("❌ Failed to authenticate Xbox Live client", exc_info=e)
+        if HTTP_SESSION and not HTTP_SESSION.is_closed:
+            await HTTP_SESSION.aclose()
+        await API.set_device_state(DeviceStates.ERROR)
+
+@API.listens_to(Events.CONNECT)
+async def on_connect() -> None:
+    """This is the key function. It only runs once the remote is fully connected."""
+    global ENTITY
+    await API.set_device_state(DeviceStates.CONNECTED)
+    # Only create the entity AFTER the connection is established to avoid the race condition
+    if CLIENT and not ENTITY:
+        _LOG.info("Remote connected, creating entity...")
         profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
         
         gamertag = "Xbox User"
@@ -96,19 +110,10 @@ async def connect_and_create_entity():
                 break
         _LOG.info(f"Gamertag found: {gamertag}")
 
-        await API.set_device_state(DeviceStates.CONNECTED)
-        if not ENTITY:
-            ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, gamertag)
-            API.configured_entities.add(ENTITY)
-            API.available_entities.add(ENTITY)
-            ENTITY.update()
+        ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, gamertag)
+        API.configured_entities.add(ENTITY)
+        API.available_entities.add(ENTITY)
         start_presence_updates()
-
-    except Exception as e:
-        _LOG.exception("❌ Failed to authenticate or create entity", exc_info=e)
-        if HTTP_SESSION and not HTTP_SESSION.is_closed:
-            await HTTP_SESSION.aclose()
-        await API.set_device_state(DeviceStates.ERROR)
 
 def start_presence_updates():
     global UPDATE_TASK
@@ -120,7 +125,7 @@ async def presence_update_loop():
     _LOG.info(f"Starting presence update loop (will refresh every {UPDATE_INTERVAL_SECONDS}s).")
     while True:
         try:
-            if CLIENT and HTTP_SESSION:
+            if CLIENT and HTTP_SESSION and ENTITY:
                 _LOG.info("Fetching Xbox presence data...")
                 
                 presence_url = f"https://userpresence.xboxlive.com/users/xuid({CLIENT.xuid})"
@@ -134,7 +139,6 @@ async def presence_update_loop():
                 game_info = {}
                 game_title = None
 
-                # Find the title with placement: 'Full'
                 if presence.devices:
                     for device in presence.devices:
                         if device.titles:
@@ -146,29 +150,21 @@ async def presence_update_loop():
                             if game_title:
                                 break
                 
-                # Determine correct state based on presence and if a game was found
                 if presence.state.lower() == "online":
                     game_info["state"] = "PLAYING" if game_title else "ON"
                 else:
                     game_info["state"] = "OFF"
                 
                 game_info["title"] = game_title if game_title else "Home" if presence.state.lower() == "online" else "Offline"
-                
-                # Fetch artwork from Giant Bomb using the correct title
                 game_info["image"] = await get_artwork_from_giant_bomb(HTTP_SESSION, game_title, CONFIG.giantbomb_api_key)
 
-                if ENTITY:
-                    await ENTITY.update_presence(game_info)
+                await ENTITY.update_presence(game_info)
             else:
-                _LOG.warning("Update loop running but client is not authenticated.")
+                _LOG.warning("Update loop running but client/entity not ready.")
         except Exception as e:
             _LOG.exception("❌ Error during presence update loop", exc_info=e)
 
         await asyncio.sleep(UPDATE_INTERVAL_SECONDS)
-
-@API.listens_to(Events.CONNECT)
-async def on_connect() -> None:
-    await API.set_device_state(DeviceStates.CONNECTED)
 
 # Main Execution
 SETUP_HANDLER = XboxLiveSetup(API, CONFIG, on_setup_complete)
@@ -179,7 +175,7 @@ async def main():
     await API.init(driver_path, SETUP_HANDLER.handle_command)
     await CONFIG.load(API)
     _LOG.info("🚀 Xbox Live Driver is up and discoverable.")
-    await connect_and_create_entity()
+    await connect_and_start_client()
 
 if __name__ == "__main__":
     try:
