@@ -11,9 +11,9 @@ from xbox.webapi.authentication.models import OAuth2TokenResponse
 from xbox.webapi.scripts import CLIENT_ID, CLIENT_SECRET
 from xbox.webapi.api.provider.presence.models import PresenceItem
 
-from config import XboxLiveConfig
-from setup import XboxLiveSetup
-from media_player_entity import XboxPresenceMediaPlayer
+from .config import XboxLiveConfig
+from .setup import XboxLiveSetup
+from .media_player_entity import XboxPresenceMediaPlayer
 
 _LOG = logging.getLogger(__name__)
 UPDATE_INTERVAL_SECONDS = 60
