@@ -7,24 +7,31 @@ on:
 
 env:
   INTG_NAME: xbox_live
+  # Python version to use in the builder image. See https://hub.docker.com/r/unfoldedcircle/r2-pyinstaller for possible versions.
   PYTHON_VER: 3.11.12-0.3.0
 
 jobs:
   build:
     name: Build Release
     runs-on: ubuntu-24.04
+    #Save version to env output variable to be able to use it in the following release job as a tag
     outputs:
       version: ${{ steps.get-version-and-id.outputs.VERSION }}
       driver_id: ${{ steps.get-version-and-id.outputs.DRIVER_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # History of 200 should be more than enough to calculate commit count since last release tag
+          fetch-depth: 200
 
       - name: Get version and id
+        #Id needed for env output variable
         id: get-version-and-id
         run: |
           echo "VERSION=$(jq .version -r driver.json)" >> $GITHUB_ENV
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_ENV
+          # Save to Github output to later use it in Create Release job
           echo "VERSION=$(jq .version -r driver.json)" >> $GITHUB_OUTPUT
           echo "DRIVER_ID=$(jq .driver_id -r driver.json)" >> $GITHUB_OUTPUT
 
@@ -41,7 +48,7 @@ jobs:
             bash -c \
             "cd /workspace && \
               python -m pip install -r requirements.txt && \
-              pyinstaller --clean --onedir --name intg-${DRIVER_ID} --paths . --collect-all zeroconf uc_intg_${INTG_NAME}/driver.py"
+              pyinstaller --clean --onedir --name intg-${DRIVER_ID} --collect-all zeroconf uc_intg_${INTG_NAME}/driver.py"
 
       - name: Prepare artifacts
         shell: bash
@@ -56,6 +63,7 @@ jobs:
         shell: bash
         run: | 
           tar czvf ${{ env.ARTIFACT_NAME }}.tar.gz -C ${GITHUB_WORKSPACE}/artifacts .
+          ls -lah
           
       - uses: actions/upload-artifact@v4
         id: upload_artifact
@@ -64,8 +72,7 @@ jobs:
           path: ${{ env.ARTIFACT_NAME }}.tar.gz
           if-no-files-found: error
           retention-days: 3
-
-  # FIX: The entire 'release' block below is indented to be part of 'jobs'
+            
   release:
     name: Create Release
     runs-on: ubuntu-24.04
@@ -79,26 +86,23 @@ jobs:
 
       - name: Extract build archives from downloaded files
         run: |
-          # The download-artifact action creates a directory for the artifact.
-          # This loop finds that directory and moves its contents up.
-          for dir in */; do
-            if [ -d "$dir" ]; then
-              echo "Moving files from downloaded artifact directory: $dir"
-              mv "$dir"* .
+          ls -R
+          # extract tar.gz build archives from downloaded artifacts
+          # (wrapped in tar from actions/upload-artifact, then extracted into a directory by actions/download-artifact)
+          for D in * 
+            do if [ -d "${D}" ]; then
+              mv $D/* ./
             fi
-          done
+          done;
 
       - name: Create hash file
         run: |
-          for filename in *.tar.gz; do
-            # Use sha256sum and format the output correctly
-            sha256sum "$filename" | awk '{print $1}' > "${filename}.hash"
-          done
+          for filename in *.tar.gz; do echo "sha256  `sha256sum $filename`" >> ${{needs.build.outputs.driver_id}}.hash; done;
 
       - name: Create release draft
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*.tar.gz,*.hash"
+          artifacts: "*.tar.gz,${{needs.build.outputs.driver_id}}.hash"
           draft: true
           generateReleaseNotes: true
           artifactErrorsFailBuild: true
