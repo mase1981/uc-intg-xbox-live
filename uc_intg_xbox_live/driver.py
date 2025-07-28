@@ -80,7 +80,7 @@ async def connect_and_start_client():
         CLIENT = XboxLiveClient(auth_mgr)
         _LOG.info("✅ Successfully authenticated with Xbox Live.")
         
-        # --- MIRRORING PSN LOGIC: Create a placeholder entity immediately ---
+        # Mirroring PSN: Create entity and add to AVAILABLE list only
         if not ENTITY:
             profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
             gamertag = "Xbox User"
@@ -90,7 +90,6 @@ async def connect_and_start_client():
                     break
             _LOG.info(f"Gamertag found: {gamertag}")
             ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, gamertag)
-            API.configured_entities.add(ENTITY)
             API.available_entities.add(ENTITY)
         
         await API.set_device_state(DeviceStates.CONNECTED)
@@ -100,12 +99,14 @@ async def connect_and_start_client():
             await HTTP_SESSION.aclose()
         await API.set_device_state(DeviceStates.ERROR)
 
-@API.listens_to(Events.CONNECT)
-async def on_connect() -> None:
-    """This function now only starts the polling, the entity already exists."""
-    await API.set_device_state(DeviceStates.CONNECTED)
-    # The entity already exists, so we just start the update loop
-    start_presence_updates()
+@API.listens_to(Events.SUBSCRIBE_ENTITIES)
+async def on_subscribe_entities(entity_ids: list[str]) -> None:
+    """Listen for when the remote UI subscribes to our entity."""
+    _LOG.debug(f"Received entity subscription for IDs: {entity_ids}")
+    if ENTITY and ENTITY.id in entity_ids:
+        _LOG.info("UI subscribed to our entity. Moving to configured list and starting updates.")
+        API.configured_entities.add(ENTITY)
+        start_presence_updates()
 
 def start_presence_updates():
     global UPDATE_TASK
