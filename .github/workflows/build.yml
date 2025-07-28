@@ -65,7 +65,7 @@ jobs:
           if-no-files-found: error
           retention-days: 3
             
-  release:
+release:
     name: Create Release
     runs-on: ubuntu-24.04
     needs: [build]
@@ -78,20 +78,26 @@ jobs:
 
       - name: Extract build archives from downloaded files
         run: |
-          # extract tar.gz build archives from downloaded artifacts
-          for D in * do if [ -d "${D}" ]; then
-              mv $D/* ./
+          # The download-artifact action creates a directory for the artifact.
+          # This loop finds that directory and moves its contents up.
+          for dir in */; do
+            if [ -d "$dir" ]; then
+              echo "Moving files from downloaded artifact directory: $dir"
+              mv "$dir"* .
             fi
-          done;
+          done
 
       - name: Create hash file
         run: |
-          for filename in *.tar.gz; do echo "sha256  `sha256sum $filename`" >> ${{needs.build.outputs.driver_id}}.hash; done;
+          for filename in *.tar.gz; do
+            # Use sha256sum and format the output correctly
+            sha256sum "$filename" | awk '{print $1}' > "${filename}.hash"
+          done
 
       - name: Create release draft
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "*.tar.gz,${{needs.build.outputs.driver_id}}.hash"
+          artifacts: "*.tar.gz,*.hash"
           draft: true
           generateReleaseNotes: true
           artifactErrorsFailBuild: true
