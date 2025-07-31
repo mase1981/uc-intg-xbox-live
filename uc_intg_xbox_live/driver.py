@@ -9,7 +9,6 @@ from xbox.webapi.api.client import XboxLiveClient
 from xbox.webapi.authentication.manager import AuthenticationManager
 from xbox.webapi.authentication.models import OAuth2TokenResponse
 from xbox.webapi.scripts import CLIENT_ID, CLIENT_SECRET
-from xbox.webapi.api.provider.presence.models import PresenceItem
 
 from config import XboxLiveConfig
 from setup import XboxLiveSetup
@@ -121,30 +120,23 @@ async def presence_update_loop():
         try:
             if CLIENT and HTTP_SESSION and ENTITY:
                 _LOG.info("Fetching Xbox presence data...")
-                presence_url = f"https://userpresence.xboxlive.com/users/xuid({CLIENT.xuid})"
-                presence_params = {"level": "all"}
-                presence_headers = {"x-xbl-contract-version": "3", "Accept-Language": "en-US"}
-                resp = await CLIENT.session.get(presence_url, params=presence_params, headers=presence_headers)
-                resp.raise_for_status()
-                presence = PresenceItem(**resp.json())
+                resp = await CLIENT.people.get_friends_own_batch(
+                    [CLIENT.xuid]
+                )
+                presence = resp.people[0]
                 game_info = {}
                 game_title = None
-                if presence.devices:
-                    for device in presence.devices:
-                        if device.titles:
-                            for title in device.titles:
-                                if title.placement == "Full":
-                                    game_title = title.name
-                                    _LOG.info(f"✅ Found active game (placement=Full): {game_title}")
-                                    break
-                            if game_title:
-                                break
-                if presence.state.lower() == "online":
+                if presence.presence_text:
+                    game_title = presence.presence_text
+                    _LOG.info(f"✅ Found active game: {game_title}")
+                if presence.presence_state.lower() == "online":
                     game_info["state"] = "PLAYING" if game_title else "ON"
                 else:
                     game_info["state"] = "OFF"
-                game_info["title"] = game_title if game_title else "Home" if presence.state.lower() == "online" else "Offline"
-                game_info["image"] = await get_artwork_from_giant_bomb(HTTP_SESSION, game_title, CONFIG.giantbomb_api_key)
+                game_info["title"] = game_title if game_title else "Home" if presence.presence_state.lower() == "online" else "Offline"
+                game_info["image"] = ""
+                if game_title and game_title != "Home":
+                    game_info["image"] = await get_artwork_from_giant_bomb(HTTP_SESSION, game_title, CONFIG.giantbomb_api_key)
                 await ENTITY.update_presence(game_info)
             else:
                 _LOG.warning("Update loop running but client/entity not ready.")
