@@ -2,8 +2,10 @@
   "driver_id": "uc-intg-xbox-live",
   "name": { "en": "Xbox Live" },
   "icon": "uc:gamepad-modern",
-  "description": { "en": "Displays your currently playing Xbox game with artwork." },
-  "version": "2.0.0",
+  "description": {
+    "en": "Displays your currently playing Xbox game with artwork."
+  },
+  "version": "2.0.2",
   "developer": { "name": "Meir Miyara" },
   "min_core_api": "0.3.1",
   "setup_data_schema": {
@@ -12,7 +14,9 @@
       {
         "id": "liveid",
         "label": { "en": "Xbox Live Device ID" },
-        "value": { "en": "Found in your Xbox's Settings > Devices & connections > Remote features." },
+        "value": {
+          "en": "Found in your Xbox's Settings > Devices & connections > Remote features."
+        },
         "field": { "text": { "value": "" } }
       },
       {
