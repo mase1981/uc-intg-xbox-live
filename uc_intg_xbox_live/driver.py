@@ -78,7 +78,7 @@ async def connect_and_start_client():
         await CONFIG.save(API)
         CLIENT = XboxLiveClient(auth_mgr)
         _LOG.info("✅ Successfully authenticated with Xbox Live.")
-        
+
         # Mirroring PSN: Create entity and add to AVAILABLE list only
         if not ENTITY:
             profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
@@ -88,9 +88,9 @@ async def connect_and_start_client():
                     gamertag = setting.value
                     break
             _LOG.info(f"Gamertag found: {gamertag}")
-            ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, gamertag)
+            ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, f"Gamertag: {gamertag}")
             API.available_entities.add(ENTITY)
-        
+
         await API.set_device_state(DeviceStates.CONNECTED)
     except Exception as e:
         _LOG.exception("❌ Failed to authenticate or create entity", exc_info=e)
@@ -124,19 +124,22 @@ async def presence_update_loop():
                     [CLIENT.xuid]
                 )
                 presence = resp.people[0]
-                game_info = {}
+                game_info = {
+                    "image": ""
+                }
                 game_title = None
-                if presence.presence_text:
+                if presence.presence_state == "Offline":
+                    game_info["state"] = "OFF"
+                    game_info["title"] = "Offline"
+                elif presence.presence_text:
                     game_title = presence.presence_text
                     _LOG.info(f"✅ Found active game: {game_title}")
-                if presence.presence_state.lower() == "online":
-                    game_info["state"] = "PLAYING" if game_title else "ON"
-                else:
-                    game_info["state"] = "OFF"
-                game_info["title"] = game_title if game_title else "Home" if presence.presence_state.lower() == "online" else "Offline"
-                game_info["image"] = ""
-                if game_title and game_title != "Home":
-                    game_info["image"] = await get_artwork_from_giant_bomb(HTTP_SESSION, game_title, CONFIG.giantbomb_api_key)
+                    game_info["title"] = game_title
+                    if game_title == "Home":
+                        game_info["state"] = "ON"
+                    else:
+                        game_info["state"] = "PLAYING"
+                        game_info["image"] = await get_artwork_from_giant_bomb(HTTP_SESSION, game_title, CONFIG.giantbomb_api_key)
                 await ENTITY.update_presence(game_info)
             else:
                 _LOG.warning("Update loop running but client/entity not ready.")
