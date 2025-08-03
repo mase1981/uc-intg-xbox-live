@@ -82,7 +82,6 @@ async def connect_and_start_client():
         CLIENT = XboxLiveClient(auth_mgr)
         _LOG.info("✅ Successfully authenticated with Xbox Live.")
 
-        # Create entity and add to AVAILABLE list only
         if not ENTITY:
             try:
                 profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
@@ -97,9 +96,8 @@ async def connect_and_start_client():
                 _LOG.info("✅ Entity created and added to available entities.")
             except Exception as e:
                 _LOG.exception("❌ Failed to create entity", exc_info=e)
-                # Continue anyway, we can still set connected state
         
-        # CRITICAL: Set device state to CONNECTED
+        await asyncio.sleep(0.5)
         await API.set_device_state(DeviceStates.CONNECTED)
         _LOG.info("✅ Device state set to CONNECTED")
         
@@ -108,6 +106,14 @@ async def connect_and_start_client():
         if HTTP_SESSION and not HTTP_SESSION.is_closed:
             await HTTP_SESSION.aclose()
         await API.set_device_state(DeviceStates.ERROR)
+
+@API.listens_to(Events.CONNECT)
+async def on_connect() -> None:
+    """Called when remote connects via WebSocket."""
+    _LOG.info("Remote connected via WebSocket - confirming device state")
+    if CLIENT and ENTITY:
+        await API.set_device_state(DeviceStates.CONNECTED)
+        _LOG.info("✅ Device state confirmed as CONNECTED after remote connection")
 
 @API.listens_to(Events.SUBSCRIBE_ENTITIES)
 async def on_subscribe_entities(entity_ids: list[str]) -> None:
