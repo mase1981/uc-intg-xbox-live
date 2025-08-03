@@ -66,7 +66,10 @@ async def on_setup_complete():
 async def connect_and_start_client():
     global CLIENT, HTTP_SESSION, ENTITY
     if not CONFIG.tokens or not CONFIG.liveid:
+        _LOG.error("Missing tokens or liveid, cannot connect")
+        await API.set_device_state(DeviceStates.ERROR)
         return
+    
     _LOG.info("Attempting to authenticate with stored tokens...")
     try:
         ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -79,21 +82,29 @@ async def connect_and_start_client():
         CLIENT = XboxLiveClient(auth_mgr)
         _LOG.info("✅ Successfully authenticated with Xbox Live.")
 
-        # Mirroring PSN: Create entity and add to AVAILABLE list only
+        # Create entity and add to AVAILABLE list only
         if not ENTITY:
-            profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
-            gamertag = "Xbox User"
-            for setting in profile.profile_users[0].settings:
-                if setting.id == "ModernGamertag":
-                    gamertag = setting.value
-                    break
-            _LOG.info(f"Gamertag found: {gamertag}")
-            ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, f"Gamertag: {gamertag}")
-            API.available_entities.add(ENTITY)
-
+            try:
+                profile = await CLIENT.profile.get_profile_by_xuid(CLIENT.xuid)
+                gamertag = "Xbox User"
+                for setting in profile.profile_users[0].settings:
+                    if setting.id == "ModernGamertag":
+                        gamertag = setting.value
+                        break
+                _LOG.info(f"Gamertag found: {gamertag}")
+                ENTITY = XboxPresenceMediaPlayer(API, CONFIG.liveid, f"Gamertag: {gamertag}")
+                API.available_entities.add(ENTITY)
+                _LOG.info("✅ Entity created and added to available entities.")
+            except Exception as e:
+                _LOG.exception("❌ Failed to create entity", exc_info=e)
+                # Continue anyway, we can still set connected state
+        
+        # CRITICAL: Set device state to CONNECTED
         await API.set_device_state(DeviceStates.CONNECTED)
+        _LOG.info("✅ Device state set to CONNECTED")
+        
     except Exception as e:
-        _LOG.exception("❌ Failed to authenticate or create entity", exc_info=e)
+        _LOG.exception("❌ Failed to authenticate", exc_info=e)
         if HTTP_SESSION and not HTTP_SESSION.is_closed:
             await HTTP_SESSION.aclose()
         await API.set_device_state(DeviceStates.ERROR)
