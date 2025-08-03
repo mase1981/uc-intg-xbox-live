@@ -156,8 +156,14 @@ async def main():
     await API.init(driver_path, SETUP_HANDLER.handle_command)
     await CONFIG.load(API)
     _LOG.info("🚀 Xbox Live Driver is up and discoverable.")
-    if CONFIG.tokens:
+    
+    # Check if we have a complete configuration
+    if CONFIG.tokens and CONFIG.liveid and CONFIG.giantbomb_api_key:
+        _LOG.info("Complete configuration found, attempting auto-reconnection...")
         await connect_and_start_client()
+    else:
+        _LOG.info("Incomplete configuration, requiring setup.")
+        await API.set_device_state(DeviceStates.ERROR)
 
 if __name__ == "__main__":
     try:
