@@ -38,8 +38,13 @@ async def connect_and_start_client():
 
     _LOG.info("Attempting to authenticate with stored tokens...")
     try:
-        ssl_context = ssl.create_default_context(cafile=certifi.where())
-        HTTP_SESSION = httpx.AsyncClient(verify=ssl_context)
+        # Close existing session if it exists to prevent resource leak
+        if HTTP_SESSION and not HTTP_SESSION.is_closed:
+            _LOG.debug("Closing existing HTTP session before creating new one")
+            await HTTP_SESSION.aclose()
+
+        timeout = httpx.Timeout(connect=5.0, read=15.0, write=10.0, pool=5.0)
+        HTTP_SESSION = httpx.AsyncClient(verify=True, timeout=timeout)
         auth_mgr = AuthenticationManager(HTTP_SESSION, CLIENT_ID, CLIENT_SECRET, "")
         auth_mgr.oauth = OAuth2TokenResponse.model_validate(CONFIG.tokens)
         await auth_mgr.refresh_tokens()
