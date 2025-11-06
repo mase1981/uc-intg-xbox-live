@@ -1,8 +1,6 @@
 import asyncio
 import logging
 import httpx
-import ssl
-import certifi
 from pathlib import Path
 from ucapi import IntegrationAPI, DeviceStates, Events
 from pythonxbox.api.client import XboxLiveClient
