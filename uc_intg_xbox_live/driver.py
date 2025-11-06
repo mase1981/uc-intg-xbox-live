@@ -19,13 +19,7 @@ UPDATE_INTERVAL_SECONDS = 60
 ARTWORK_CACHE = {}
 
 # Global Objects
-try:
-    loop = asyncio.get_running_loop()
-except RuntimeError:
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-API = IntegrationAPI(loop)
+API: IntegrationAPI | None = None
 CONFIG = XboxLiveConfig()
 ENTITY: XboxPresenceMediaPlayer | None = None
 UPDATE_TASK: asyncio.Task | None = None
@@ -92,7 +86,6 @@ async def connect_and_start_client():
             await HTTP_SESSION.aclose()
         await API.set_device_state(DeviceStates.ERROR)
 
-@API.listens_to(Events.CONNECT)
 async def on_connect() -> None:
     """Called when remote connects via WebSocket."""
     _LOG.info("Remote connected via WebSocket - confirming device state")
@@ -100,7 +93,6 @@ async def on_connect() -> None:
         await API.set_device_state(DeviceStates.CONNECTED)
         _LOG.info("✅ Device state confirmed as CONNECTED after remote connection")
 
-@API.listens_to(Events.SUBSCRIBE_ENTITIES)
 async def on_subscribe_entities(entity_ids: list[str]) -> None:
     """Listen for when the remote UI subscribes to our entity."""
     _LOG.debug(f"Received entity subscription for IDs: {entity_ids}")
@@ -115,7 +107,7 @@ def start_presence_updates():
         _LOG.info("Update loop already running.")
         return
     _LOG.info("Starting presence update loop...")
-    UPDATE_TASK = loop.create_task(presence_update_loop())
+    UPDATE_TASK = asyncio.create_task(presence_update_loop())
 
 async def presence_update_loop():
     while True:
@@ -165,14 +157,23 @@ async def presence_update_loop():
         await asyncio.sleep(UPDATE_INTERVAL_SECONDS)
 
 # Main Execution
-SETUP_HANDLER = XboxLiveSetup(API, CONFIG, on_setup_complete)
-
 async def main():
+    global API, SETUP_HANDLER
+
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     # Reduce httpx logging noise
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("httpcore").setLevel(logging.WARNING)
+
+    # Initialize API with the running event loop
+    loop = asyncio.get_running_loop()
+    API = IntegrationAPI(loop)
+    SETUP_HANDLER = XboxLiveSetup(API, CONFIG, on_setup_complete)
+
+    # Register event handlers
+    API.listens_to(Events.CONNECT)(on_connect)
+    API.listens_to(Events.SUBSCRIBE_ENTITIES)(on_subscribe_entities)
 
     driver_path = str(Path(__file__).resolve().parent.parent / "driver.json")
     await API.init(driver_path, SETUP_HANDLER.handle_command)
@@ -188,6 +189,8 @@ async def main():
         await API.set_device_state(DeviceStates.ERROR)
 
 if __name__ == "__main__":
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(main())
         loop.run_forever()
