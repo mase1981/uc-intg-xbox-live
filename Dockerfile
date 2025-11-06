@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bullseye
+FROM python:3.14-slim
 
 WORKDIR /app
 
@@ -18,4 +18,4 @@ ENV UC_INTEGRATION_INTERFACE="0.0.0.0"
 ENV UC_INTEGRATION_HTTP_PORT="9099"
 ENV UC_CONFIG_HOME="/config"
 
-CMD ["python3", "-u", "./uc_intg_xbox_live/driver.py"]
+CMD ["python3", "-u", "-m", "uc_intg_xbox_live.driver"]
