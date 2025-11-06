@@ -85,7 +85,6 @@ async def connect_and_start_client():
         await asyncio.sleep(0.5)
         await API.set_device_state(DeviceStates.CONNECTED)
         _LOG.info("✅ Device state set to CONNECTED")
-        await presence_update_loop()
 
     except Exception as e:
         _LOG.exception("❌ Failed to authenticate", exc_info=e)
@@ -170,6 +169,11 @@ SETUP_HANDLER = XboxLiveSetup(API, CONFIG, on_setup_complete)
 
 async def main():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    # Reduce httpx logging noise
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+
     driver_path = str(Path(__file__).resolve().parent.parent / "driver.json")
     await API.init(driver_path, SETUP_HANDLER.handle_command)
     await CONFIG.load(API)
