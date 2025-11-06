@@ -1,18 +1,19 @@
 [project]
 name = "uc_intg_xbox_live"
-version = "2.0.4"
+version = "3.0.0"
 description = "An Unfolded Circle integration to display Xbox Live game presence."
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
     { name = "Meir Miyara" }
 ]
-# ... inside [project]
 dependencies = [
     "ucapi==0.3.1",
+    "python-xbox==0.1.0",
     "xbox-webapi==2.1.0",
     "httpx",
-    "certifi"
+    "certifi",
+    "platformdirs==4.5.0"
 ]
 
 [build-system]
