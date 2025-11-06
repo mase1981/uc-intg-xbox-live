@@ -16,7 +16,6 @@ from media_player_entity import XboxPresenceMediaPlayer
 
 _LOG = logging.getLogger(__name__)
 UPDATE_INTERVAL_SECONDS = 60
-ARTWORK_CACHE = {}
 
 # Global Objects
 API: IntegrationAPI | None = None
