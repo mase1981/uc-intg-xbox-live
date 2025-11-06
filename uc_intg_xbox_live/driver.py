@@ -25,16 +25,6 @@ UPDATE_TASK: asyncio.Task | None = None
 CLIENT: XboxLiveClient | None = None
 HTTP_SESSION: httpx.AsyncClient | None = None
 
-def get_active_game_detail(presence_details):
-    """Return the primary active game detail from presence details."""
-    if not presence_details:
-        return None
-    return next(
-        (d for d in presence_details
-         if d.state == "Active" and d.title_id and d.is_game and d.is_primary),
-        None
-    )
-
 async def on_setup_complete():
     _LOG.info("✅ Setup complete, proceeding to connect.")
     await connect_and_start_client()
