@@ -1,8 +1,8 @@
 # Unfolded Circle - Xbox Live Integration
 
 [![Discord](https://badgen.net/discord/online-members/zGVYf58)](https://discord.gg/zGVYf58)
-![GitHub Release](https://img.shields.io/github/v/release/mase1981/uc-intg-xbox-live)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/mase1981/uc-intg-xbox-live/total)
+![GitHub Release](https://img.shields.io/github/v/release/mase1981/uc-intg-xbox_live)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/mase1981/uc-intg-xbox_live/total)
 ![License](https://img.shields.io/badge/license-MPL--2.0-blue)
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/meirmiyara)
 [![PayPal](https://img.shields.io/badge/PayPal-donate-blue.svg)](https://paypal.me/mmiyara)
@@ -41,8 +41,8 @@ You can run this integration in two ways: as a `tar.gz` archive on an Unfolded C
 
 This is the recommended method for users running the Unfolded Circle Hub software.
 
-1.  Go to the [**Releases**](https://github.com/mase1981/uc-intg-xbox-live/releases) page of this repository.
-2.  Download the latest `uc-intg-xbox-live-x.x.x-aarch64.tar.gz` file and the corresponding `.hash` file.
+1.  Go to the [**Releases**](https://github.com/mase1981/uc-intg-xbox_live/releases) page of this repository.
+2.  Download the latest `uc-intg-xbox_live-x.x.x-aarch64.tar.gz` file and the corresponding `.hash` file.
 3.  On your Unfolded Circle remote or web configurator, go to `Settings > Integrations > + Add New`.
 4.  Select **"Install from file (.tar.gz)"** and upload the archive you downloaded.
 5.  The integration will install and become discoverable.
@@ -65,9 +65,9 @@ Create a `docker-compose.yml` file with the following content:
 ```
 version: '3.8'
 services:
-  uc-intg-xbox-live:
+  uc-intg-xbox_live:
     build: .
-    container_name: uc-intg-xbox-live
+    container_name: uc-intg-xbox_live
     restart: unless-stopped
     network_mode: host
     volumes:
@@ -86,8 +86,8 @@ services:
 
 ## Development
 
-1.  Clone the repository: `git clone https://github.com/mase1981/uc-intg-xbox-live.git`
-2.  Navigate to the directory: `cd uc-intg-xbox-live`
+1.  Clone the repository: `git clone https://github.com/mase1981/uc-intg-xbox_live.git`
+2.  Navigate to the directory: `cd uc-intg-xbox_live`
 3.  Create a virtual environment: `python -m venv .venv`
 4.  Activate it: `.\.venv\Scripts\Activate.ps1` (Windows) or `source .venv/bin/activate` (macOS/Linux).
 5.  Install dependencies: `pip install -r requirements.txt`

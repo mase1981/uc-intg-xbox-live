@@ -1,3 +1,10 @@
+"""
+Xbox Live authentication module for Unfolded Circle integration.
+
+:copyright: (c) 2025 by Meir Miyara.
+:license: MPL-2.0, see LICENSE for more details.
+"""
+
 import logging
 from urllib.parse import urlparse, parse_qs
 import httpx
@@ -16,11 +23,9 @@ class XboxAuth:
         _LOG.info("XboxAuth initialized.")
 
     def generate_auth_url(self) -> str:
-        """Generates the Microsoft login URL."""
         return self.auth_mgr.generate_authorization_url()
 
     async def process_redirect_url(self, redirect_url: str) -> dict | None:
-        """Processes the redirect URL to get tokens."""
         _LOG.info("Processing redirect URL...")
         try:
             parsed_url = urlparse(redirect_url)
@@ -33,7 +38,6 @@ class XboxAuth:
 
             await self.auth_mgr.request_tokens(auth_code)
             _LOG.info("✅ OAuth2 tokens successfully retrieved.")
-            # Use model_dump() as shown in your working example
             return self.auth_mgr.oauth.model_dump()
         except Exception:
             _LOG.exception("Error during token exchange.")

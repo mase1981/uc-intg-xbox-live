@@ -1,5 +1,5 @@
 {
-  "driver_id": "uc-intg-xbox-live",
+  "driver_id": "uc-intg-xbox_live",
   "name": { "en": "Xbox Live" },
   "icon": "uc:gamepad-modern",
   "description": {

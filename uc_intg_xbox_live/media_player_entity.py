@@ -1,16 +1,20 @@
+"""
+Xbox Live media player entity module for Unfolded Circle integration.
+
+:copyright: (c) 2025 by Meir Miyara.
+:license: MPL-2.0, see LICENSE for more details.
+"""
+
 import logging
 from ucapi.media_player import MediaPlayer
 
 _LOG = logging.getLogger("XBOX_ENTITY")
 
 async def empty_command_handler(entity, command, value):
-    """A dummy command handler that logs commands but does nothing."""
     _LOG.info(f"Command '{command}' received with value '{value}'. No action taken.")
     return True
 
 class XboxPresenceMediaPlayer(MediaPlayer):
-    """Media Player entity to represent Xbox presence."""
-
     def __init__(self, api, live_id: str, gamertag: str):
         super().__init__(
             identifier=f"xbox-presence-{live_id}",
@@ -20,7 +24,7 @@ class XboxPresenceMediaPlayer(MediaPlayer):
                 "state": "OFF",
                 "media_title": "Offline",
                 "media_artist": "Xbox Live",
-                "media_image_url": "", # Initialize as empty string to prevent ucapi log errors
+                "media_image_url": "",
                 "media_type": "GAME",
             },
             cmd_handler=empty_command_handler
@@ -29,7 +33,6 @@ class XboxPresenceMediaPlayer(MediaPlayer):
         _LOG.info(f"✅ XboxPresenceMediaPlayer entity '{gamertag}' initialized.")
 
     async def update_presence(self, presence_data: dict):
-        """Updates the entity's attributes based on new presence data from the driver."""
         new_state = presence_data.get("state")
         new_title = presence_data.get("title")
         new_art_uri = presence_data.get("image")

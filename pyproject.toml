@@ -1,12 +1,28 @@
+[build-system]
+requires = ["setuptools>=65.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "uc_intg_xbox_live"
-version = "3.0.0"
-description = "An Unfolded Circle integration to display Xbox Live game presence."
-requires-python = ">=3.10"
-license = { text = "MIT" }
+name = "uc-intg-xbox-live"
+dynamic = ["version"]
+description = "Unfolded Circle Integration for Xbox Live Presence Display"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MPL-2.0" }
 authors = [
-    { name = "Meir Miyara" }
+    { name = "Meir Miyara", email = "meir.miyara@gmail.com" }
 ]
+keywords = ["unfoldedcircle", "integration", "xbox", "xbox-live", "presence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL-2.0)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Home Automation",
+]
+
 dependencies = [
     "ucapi==0.3.1",
     "python-xbox==0.1.0",
@@ -15,6 +31,40 @@ dependencies = [
     "platformdirs==4.5.0"
 ]
 
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.7.0",
+    "isort>=5.12.0",
+    "flake8>=6.1.0",
+    "pylint>=2.17.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/mase1981/uc-intg-xbox-live"
+Documentation = "https://github.com/mase1981/uc-intg-xbox-live/blob/main/README.md"
+Repository = "https://github.com/mase1981/uc-intg-xbox-live"
+Issues = "https://github.com/mase1981/uc-intg-xbox-live/issues"
+
+[tool.setuptools]
+packages = ["uc_intg_xbox_live"]
+
+[tool.setuptools.dynamic]
+version = {attr = "uc_intg_xbox_live.__version__"}
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pylint.messages_control]
+max-line-length = 100
+disable = [
+    "C0103",
+    "C0114",
+    "R0913",
+]

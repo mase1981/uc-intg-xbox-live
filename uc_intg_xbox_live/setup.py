@@ -1,3 +1,10 @@
+"""
+Xbox Live setup module for Unfolded Circle integration.
+
+:copyright: (c) 2025 by Meir Miyara.
+:license: MPL-2.0, see LICENSE for more details.
+"""
+
 import logging
 import httpx
 import ssl
@@ -10,8 +17,8 @@ from ucapi import (
     IntegrationSetupError,
     RequestUserInput,
 )
-from config import XboxLiveConfig
-from auth import XboxAuth
+from uc_intg_xbox_live.config import XboxLiveConfig
+from uc_intg_xbox_live.auth import XboxAuth
 
 _LOG = logging.getLogger("XBOX_LIVE_SETUP")
 
