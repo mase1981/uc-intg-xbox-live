@@ -1,8 +1,8 @@
 import logging
 from urllib.parse import urlparse, parse_qs
 import httpx
-from xbox.webapi.authentication.manager import AuthenticationManager
-from xbox.webapi.scripts import CLIENT_ID, CLIENT_SECRET
+from pythonxbox.authentication.manager import AuthenticationManager
+from pythonxbox.scripts import CLIENT_ID, CLIENT_SECRET
 
 _LOG = logging.getLogger("XBOX_LIVE_AUTH")
 OAUTH2_DESKTOP_REDIRECT_URI = "https://login.live.com/oauth20_desktop.srf"

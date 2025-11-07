@@ -16,7 +16,6 @@ class DateTimeEncoder(json.JSONEncoder):
 class XboxLiveConfig:
     liveid: str | None = None
     tokens: dict | None = field(default_factory=dict)
-    giantbomb_api_key: str | None = None
 
     async def load(self, api):
         config_path = os.path.join(api.config_dir_path, "config.json")
@@ -25,7 +24,6 @@ class XboxLiveConfig:
                 config_data = json.load(f)
             self.liveid = config_data.get("liveid")
             self.tokens = config_data.get("tokens")
-            self.giantbomb_api_key = config_data.get("giantbomb_api_key")
             _LOG.info("✅ Configuration loaded successfully.")
         except (FileNotFoundError, json.JSONDecodeError):
             _LOG.info("Configuration file not found or is invalid. Starting fresh.")

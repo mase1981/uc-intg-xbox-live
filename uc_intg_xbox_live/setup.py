@@ -26,12 +26,11 @@ class XboxLiveSetup:
         if isinstance(request, DriverSetupRequest):
             if request.reconfigure or not self.config.tokens:
                 self.config.liveid = request.setup_data.get("liveid", "").strip()
-                self.config.giantbomb_api_key = request.setup_data.get("giantbomb_api_key", "").strip()
 
-                if not self.config.liveid or not self.config.giantbomb_api_key:
+                if not self.config.liveid:
                     return SetupError(IntegrationSetupError.INVALID_INPUT)
 
-                _LOG.info(f"Live ID and Giant Bomb Key captured. Starting new auth flow.")
+                _LOG.info("Live ID captured. Starting new auth flow.")
                 ssl_context = ssl.create_default_context(cafile=certifi.where())
                 self.auth_session = httpx.AsyncClient(verify=ssl_context)
                 auth_handler = XboxAuth(self.auth_session)
