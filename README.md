@@ -15,6 +15,7 @@ Display what you're playing on Xbox Live with beautiful game artwork directly on
 
 This integration connects to Xbox Live services to show your gaming presence in real-time with cover art, creating a rich media experience on your UC Remote.
 
+# MAJOR UPDATE: THIS INTEGRATION HAS BEEN OFFICIALLY MERGED INTO A SINGLE INTEGRATION: https://github.com/mase1981/uc-intg-xbox WHICH WILL PROVIDE BOTH CONTROLS AS WELL AS MEDIA PLAYER - THIS XBOX-LIVE INTEGRATION WILL NO LONGER BE MAINTAINED AND OFFICIALLY REPLACED WITH THE XBOX INTEGRATION #
 ---
 
 ## 🌟 What This Integration Does
