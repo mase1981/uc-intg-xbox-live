@@ -1,149 +1,145 @@
-# Xbox Live Integration for Unfolded Circle Remote Two/3
+# Xbox Live Integration for Unfolded Circle Remote 2/3
+
+Display your current Xbox Live gaming activity with **beautiful game artwork** directly on your Unfolded Circle Remote 2 or Remote 3. This integration shows **real-time presence**, **game titles**, and **official cover art** from Xbox Live.
 
 ![xbox](https://img.shields.io/badge/Xbox-Live-green)
 [![GitHub Release](https://img.shields.io/github/v/release/mase1981/uc-intg-xbox-live?style=flat-square)](https://github.com/mase1981/uc-intg-xbox-live/releases)
-![License](https://img.shields.io/badge/license-MPL--2.0-blue)
+![License](https://img.shields.io/badge/license-MPL--2.0-blue?style=flat-square)
 [![GitHub issues](https://img.shields.io/github/issues/mase1981/uc-intg-xbox-live?style=flat-square)](https://github.com/mase1981/uc-intg-xbox-live/issues)
 [![Community Forum](https://img.shields.io/badge/community-forum-blue?style=flat-square)](https://community.unfoldedcircle.com/)
 [![Discord](https://badgen.net/discord/online-members/zGVYf58)](https://discord.gg/zGVYf58)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/mase1981/uc-intg-xbox-live/total)
-[![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/meirmiyara)
-[![PayPal](https://img.shields.io/badge/PayPal-donate-blue.svg)](https://paypal.me/mmiyara)
-[![Github Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-30363D?&logo=GitHub-Sponsors&logoColor=EA4AAA)](https://github.com/sponsors/mase1981/button)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/mase1981/uc-intg-xbox-live/total?style=flat-square)
+[![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?style=flat-square)](https://buymeacoffee.com/meirmiyara)
+[![PayPal](https://img.shields.io/badge/PayPal-donate-blue.svg?style=flat-square)](https://paypal.me/mmiyara)
+[![Github Sponsors](https://img.shields.io/badge/GitHub%20Sponsors-30363D?&logo=GitHub-Sponsors&logoColor=EA4AAA&style=flat-square)](https://github.com/sponsors/mase1981)
 
-Display what you're playing on Xbox Live with beautiful game artwork directly on your Unfolded Circle Remote Two/3!
-
-This integration connects to Xbox Live services to show your gaming presence in real-time with cover art, creating a rich media experience on your UC Remote.
-
-# MAJOR UPDATE: THIS INTEGRATION HAS BEEN OFFICIALLY MERGED INTO A SINGLE INTEGRATION: https://github.com/mase1981/uc-intg-xbox WHICH WILL PROVIDE BOTH CONTROLS AS WELL AS MEDIA PLAYER - THIS XBOX-LIVE INTEGRATION WILL NO LONGER BE MAINTAINED AND OFFICIALLY REPLACED WITH THE XBOX INTEGRATION #
 ---
+## ⚠️ IMPORTANT NOTICE ⚠️
 
-## 🌟 What This Integration Does
+**THIS INTEGRATION HAS BEEN OFFICIALLY MERGED INTO THE [XBOX INTEGRATION](https://github.com/mase1981/uc-intg-xbox)**
 
-### Real-Time Gaming Presence
+The new Xbox integration provides **BOTH** remote control and media player (presence display) functionality in a single integration.
 
-The Xbox Live integration displays your current gaming activity with stunning visuals:
-
-- 🎮 **Current Game Display** - See what you're playing with official game artwork
-- 👤 **Gamertag Display** - Your Xbox gamertag shown as entity name
-- 🖼️ **Game Cover Art** - High-quality game artwork pulled from Xbox Live
-- 🟢 **Live Presence Status** - Online, Playing, or Offline states
-- ⚡ **Real-Time Updates** - Updates every 60 seconds automatically
-- 📱 **Media Player Widget** - Beautiful presentation on UC Remote UI
-
-### How It Works
-
-The integration authenticates with your Microsoft account and monitors your Xbox Live presence:
-
-1. **Authenticate** - Secure OAuth2 login with Microsoft
-2. **Monitor** - Checks your Xbox Live presence every 60 seconds
-3. **Display** - Updates media player entity with:
-   - Game title as media title
-   - Game artwork as media image
-   - Current state (Playing/Online/Offline)
+**This Xbox Live integration will no longer be maintained.** Please use the [Xbox Integration](https://github.com/mase1981/uc-intg-xbox) instead for:
+- Full Xbox console control
+- Live gaming presence display with artwork
+- Power management
+- All features from this integration and more
 
 ---
 
-## ✨ Features
+## Features
 
-- 🎨 **Beautiful Game Artwork** - Official high-resolution game covers
-- 🏷️ **Automatic Gamertag Detection** - Entity named with your Xbox gamertag
-- 🔄 **Auto-Updating Presence** - Real-time game tracking (60s refresh)
-- 🔐 **Secure OAuth2 Authentication** - Microsoft account login
-- 💾 **Persistent Configuration** - One-time setup, works across reboots
-- 🌐 **Cloud-Based** - Works via Xbox Live API (no console access needed)
-- 📊 **Rich Status Display** - Playing, Online, or Offline states
+This integration displays your current gaming activity with stunning visuals through the Xbox Live API, delivering seamless integration with your Unfolded Circle Remote for real-time presence monitoring.
 
 ---
+## ❤️ Support Development ❤️
 
-## 📋 Requirements
+If you find this integration useful, consider supporting development:
 
-### Hardware
-- Xbox One, Xbox Series S, or Xbox Series X console
-- Unfolded Circle Remote Two or Remote 3
-- Active internet connection
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-pink?style=for-the-badge&logo=github)](https://github.com/sponsors/mase1981)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/meirmiyara)
+[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mmiyara)
 
-### Software
-- Microsoft account with Xbox Live access
-- Xbox Live Device ID (from console settings)
-- UC Remote firmware 1.7.0+
-
-### Xbox Console Setup
-- Xbox Live Device ID found at: **Settings > Devices & connections > Remote features**
-
+Your support helps maintain this integration. Thank you! ❤️
 ---
 
-## 🚀 Installation
+### 🎮 **Real-Time Gaming Presence**
 
-### Option 1: GitHub Release (Recommended)
+#### **Current Game Display**
+- **Game Title** - See what you're playing with official game artwork
+- **Gamertag Display** - Your Xbox gamertag shown as entity name
+- **Game Cover Art** - High-quality game artwork from Xbox Live
+- **Live Presence Status** - Online, Playing, or Offline states
+- **Real-Time Updates** - Updates every 60 seconds automatically
+- **Media Player Widget** - Beautiful presentation on UC Remote UI
 
-1. Download latest `.tar.gz` from [Releases](https://github.com/mase1981/uc-intg-xbox-live/releases)
-2. Open UC Remote configurator: `http://your-remote-ip/configurator`
-3. **Integrations** → **Add Integration** → **Upload driver**
-4. Select downloaded file
-5. Follow setup wizard
+#### **Display Information**
+- **Media Title**: Current game name or status
+- **Media Artist**: "Xbox Live"
+- **Media Image**: Game cover artwork
+- **State**: Playing (in-game), On (online), Off (offline)
 
-### Option 2: Docker
+### **Supported Consoles**
 
-```bash
-docker run -d --name uc-intg-xbox-live --restart unless-stopped --network host -v $(pwd)/data:/data -e UC_CONFIG_HOME=/data -e UC_INTEGRATION_INTERFACE=0.0.0.0 -e UC_INTEGRATION_HTTP_PORT=9090 -e UC_DISABLE_MDNS_PUBLISH=false ghcr.io/mase1981/uc-intg-xbox-live:latest
-```
+- **Xbox One** (Original, S, X)
+- **Xbox Series S**
+- **Xbox Series X**
 
-**Or with Docker Compose:**
+### **Protocol Requirements**
 
+- **Protocol**: Xbox Live REST API
+- **Microsoft Account**: With Xbox Live access
+- **Xbox Live Device ID**: Found in console settings
+- **Internet Connectivity**: Required for Xbox Live API
+- **Authentication**: OAuth2 with token refresh
+
+### **Network Requirements**
+
+- **Internet Access** - Required for Xbox Live API communication
+- **HTTPS Protocol** - Integration uses secure HTTPS to Xbox Live servers
+- **Firewall** - Ensure outbound HTTPS traffic is permitted
+- **Cloud-Based** - Works via Xbox Live API (no console access needed)
+
+## Installation
+
+### Option 1: Remote Web Interface (Recommended)
+1. Navigate to the [**Releases**](https://github.com/mase1981/uc-intg-xbox-live/releases) page
+2. Download the latest `uc-intg-xbox-live-<version>-aarch64.tar.gz` file
+3. Open your remote's web interface (`http://your-remote-ip`)
+4. Go to **Settings** → **Integrations** → **Add Integration**
+5. Click **Upload** and select the downloaded `.tar.gz` file
+
+### Option 2: Docker (Advanced Users)
+
+The integration is available as a pre-built Docker image from GitHub Container Registry:
+
+**Image**: `ghcr.io/mase1981/uc-intg-xbox-live:latest`
+
+**Docker Compose:**
 ```yaml
-version: '3.8'
-
 services:
-  xbox-live-integration:
+  uc-intg-xbox-live:
     image: ghcr.io/mase1981/uc-intg-xbox-live:latest
     container_name: uc-intg-xbox-live
-    restart: unless-stopped
     network_mode: host
     volumes:
-      - ./data:/data
+      - </local/path>:/data
     environment:
       - UC_CONFIG_HOME=/data
-      - UC_INTEGRATION_INTERFACE=0.0.0.0
       - UC_INTEGRATION_HTTP_PORT=9090
-      - UC_DISABLE_MDNS_PUBLISH=false
+      - UC_INTEGRATION_INTERFACE=0.0.0.0
+      - PYTHONPATH=/app
+    restart: unless-stopped
 ```
 
+**Docker Run:**
 ```bash
-docker-compose up -d
+docker run -d --name uc-intg-xbox-live --restart unless-stopped --network host -v xbox-live-config:/data -e UC_CONFIG_HOME=/data -e UC_INTEGRATION_INTERFACE=0.0.0.0 -e UC_INTEGRATION_HTTP_PORT=9090 -e PYTHONPATH=/app ghcr.io/mase1981/uc-intg-xbox-live:latest
 ```
 
-### Option 3: Development
-
-```bash
-git clone https://github.com/mase1981/uc-intg-xbox-live.git
-cd uc-intg-xbox-live
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python -m uc_intg_xbox_live.driver
-```
-
----
-
-## ⚙️ Setup
+## Configuration
 
 ### Step 1: Get Xbox Live Device ID
 
-1. On your Xbox console:
-   - Navigate to **Settings > Devices & connections > Remote features**
-2. **Copy the Xbox Live Device ID** (long alphanumeric string)
+**IMPORTANT**: You need your Xbox Live Device ID before setup.
+
+#### On Your Xbox Console:
+1. Navigate to **Settings** → **Devices & connections** → **Remote features**
+2. Copy the **Xbox Live Device ID** (long alphanumeric string)
 3. Keep it handy for setup
 
-### Step 2: Add Integration
+### Step 2: Setup Integration
 
-1. UC Remote configurator → **Integrations** → **Add**
-2. Select **Xbox Live**
-3. Enter **Xbox Live Device ID** from Step 1
-4. Click **Next**
+1. After installation, go to **Settings** → **Integrations**
+2. The Xbox Live integration should appear in **Available Integrations**
+3. Click **"Configure"** to begin setup:
 
-### Step 3: Microsoft Authentication
+#### **Configuration:**
+- **Xbox Live Device ID**: Enter the ID from your Xbox console
+- Click **Next**
 
+#### **Microsoft Authentication:**
 1. **Copy the login URL** displayed in setup
 2. **Open URL in web browser**
 3. **Login with Microsoft account** (same account linked to Xbox)
@@ -151,110 +147,66 @@ python -m uc_intg_xbox_live.driver
 5. **Paste URL** back into integration setup
 6. Click **Complete**
 
-### Done! ✅
+#### **Connection Test:**
+- Integration authenticates with Xbox Live
+- Fetches your Xbox gamertag
+- Verifies presence data access
+- Setup fails if authentication unsuccessful
 
-- Xbox Live entity appears with your gamertag
-- Configuration saved permanently
-- No re-authentication needed (tokens auto-refresh)
+4. Integration will create entity:
+   - **Gamertag: [Your Xbox Gamertag]**: Media player entity showing gaming activity
 
----
-
-## 🎮 Entity Display
+## Using the Integration
 
 ### Media Player Entity
+
+The media player entity displays live Xbox gaming activity:
 
 **Entity Name:** `Gamertag: [Your Xbox Gamertag]`
 
 **Displays:**
-- **Media Title:** Current game name or status
-- **Media Artist:** "Xbox Live"
-- **Media Image:** Game cover artwork
-- **State:** 
-  - 🟢 **PLAYING** - Actively playing a game
-  - 🟢 **ON** - Online but not gaming
-  - ⚫ **OFF** - Offline
+- **Media Title**: Current game name or status
+- **Media Artist**: "Xbox Live"
+- **Media Image**: Game cover artwork
+- **State**: Playing (actively gaming), On (online), Off (offline)
 
-### Widget Appearance
+**Automatic Updates:**
+- Status refreshes every 60 seconds
+- Game changes detected automatically
+- Presence updates in real-time
+- No manual refresh needed
 
-The media player widget on your UC Remote shows:
-- Large game artwork thumbnail
-- Game title text
-- "Xbox Live" as artist
-- Current state indicator
+### What Gets Displayed
 
-Perfect for display on:
-- Main dashboard
-- Gaming activities
-- Media widget pages
+**When Playing:**
+- Game title (official game name)
+- Game artwork (high-resolution cover art)
+- "Playing" state indicator
 
----
+**When Online (Not Gaming):**
+- Xbox presence text
+- "Online" indicator
+- No artwork
 
-## 📊 What Gets Displayed
+**When Offline:**
+- "Offline" status
+- "Off" indicator
+- No artwork
 
-### Game Information
-
-When you're playing an Xbox game, the integration shows:
-
-- **Game Title** - Official game name from Xbox database
-- **Game Artwork** - High-resolution box art/cover image
-- **Status** - "Playing" state indicator
-
-### Online Status
-
-When you're online but not gaming:
-
-- **Status Text** - Your Xbox presence text
-- **State** - "Online" indicator
-- **No Artwork** - Blank image (not playing)
-
-### Offline Status
-
-When you're offline:
-
-- **Status Text** - "Offline"
-- **State** - "Off" indicator
-- **No Artwork** - Blank image
-
----
-
-## 🔄 How Updates Work
-
-### Automatic Polling
-
-The integration checks Xbox Live every **60 seconds** for:
-- Current gaming activity
-- Presence state changes
-- Game artwork updates
-
-### What Triggers Updates
-
-- Starting a new game
-- Switching games
-- Going online/offline
-- Changing presence status
-
-### Update Frequency
-
-- **Default:** 60 seconds
-- **Can be adjusted** in code if needed
-- **Balance:** Responsiveness vs API load
-
----
-
-## ⚠️ Important Limitations
+## Important Limitations
 
 ### Display Only - No Control
 
 This integration is **presence display only**:
 
-- ✅ Shows what you're playing
-- ✅ Displays game artwork
-- ✅ Updates presence status
-- ❌ **Cannot control Xbox console**
-- ❌ **Cannot launch games**
-- ❌ **Cannot navigate menus**
+- Shows what you're playing
+- Displays game artwork
+- Updates presence status
+- **Cannot control Xbox console**
+- **Cannot launch games**
+- **Cannot navigate menus**
 
-**For Xbox control**, see: [Xbox Integration](https://github.com/mase1981/uc-intg-xbox) (separate project)
+**For Xbox control**, use the [Xbox Integration](https://github.com/mase1981/uc-intg-xbox) which includes both control and presence display.
 
 ### Cloud API Dependency
 
@@ -263,263 +215,20 @@ This integration is **presence display only**:
 - Updates are not instant (60s refresh)
 - Some games may not have artwork
 
-### Token Management
+## Credits
 
-- OAuth tokens expire periodically (~90 days)
-- Integration auto-refreshes tokens
-- May need re-authentication if tokens expire
-- Handled automatically in most cases
+- **Developer**: Meir Miyara
+- **[bjw-s](https://github.com/bjw-s)**: Code assistance and identifying removal of GiantBomb dependency
+- **[OpenXbox](https://github.com/OpenXbox)**: For xbox-webapi-python library
+- **Unfolded Circle**: Remote 2/3 integration framework (ucapi)
+- **Protocol**: Xbox Live REST API
+- **Community**: Testing and feedback from UC community
 
----
+## License
 
-## 🛠 Troubleshooting
+This project is licensed under the Mozilla Public License 2.0 (MPL-2.0) - see LICENSE file for details.
 
-### No Entity Appears
-
-**Symptoms:** Integration installs but no entity shows up
-
-**Solutions:**
-- ✅ Verify Xbox Live Device ID is correct
-- ✅ Check authentication completed successfully
-- ✅ View integration logs for errors
-- ✅ Restart UC Remote
-- ✅ Reconfigure integration if needed
-
-### Entity Shows "Xbox User"
-
-**Symptoms:** Entity name is generic "Xbox User" instead of gamertag
-
-**Solutions:**
-- ✅ Ensure Microsoft account is linked to Xbox Live
-- ✅ Check Xbox profile has gamertag set
-- ✅ View logs for profile fetch errors
-- ✅ Wait for profile data to load (may take 1-2 minutes)
-
-### Entity Stuck Offline
-
-**Symptoms:** Entity always shows "Offline" even when gaming
-
-**Solutions:**
-- ✅ Verify correct Microsoft account used
-- ✅ Check Xbox console is online
-- ✅ Ensure privacy settings allow presence sharing
-- ✅ View logs for API errors
-- ✅ Re-authenticate if tokens expired
-
-### No Game Artwork
-
-**Symptoms:** Game title shows but no artwork appears
-
-**Possible Causes:**
-- Game is too new (artwork not in Xbox database yet)
-- Indie/smaller game without official artwork
-- API rate limiting or errors
-- Network connectivity issues
-
-**Solutions:**
-- ✅ Check logs for titlehub API errors
-- ✅ Verify game is recognized by Xbox
-- ✅ Try switching to different game
-- ✅ Wait a few minutes and check again
-
-### Authentication Failed
-
-**Symptoms:** Setup fails during Microsoft login
-
-**Solutions:**
-- ✅ Use correct Microsoft account (linked to Xbox)
-- ✅ Copy **entire** redirect URL including all parameters
-- ✅ Don't modify URL - paste exactly as shown
-- ✅ Ensure Xbox Live access on account
-- ✅ Try logging out and back in to Microsoft
-
-### Entity Unavailable After Reboot
-
-**Symptoms:** Integration works but entity unavailable after UC Remote restart
-
-**Solutions:**
-- ✅ Wait 30-60 seconds for initialization
-- ✅ Check that config file exists
-- ✅ View logs for token refresh errors
-- ✅ Reconfigure if tokens corrupted
-- ✅ Integration includes reboot survival features
-
----
-
-## 📊 Technical Details
-
-### Architecture
-
-- **API:** Xbox Live REST API via `pythonxbox` library
-- **Auth:** OAuth2 with token refresh
-- **Protocol:** HTTPS to Xbox Live services
-- **Entity Type:** Media Player (display only)
-- **Update Interval:** 60 seconds
-
-### API Endpoints Used
-
-| Endpoint | Purpose |
-|----------|---------|
-| `people.get_friends_by_xuid()` | Get user profile and presence |
-| `titlehub.get_title_info()` | Fetch game artwork and metadata |
-| `auth.refresh_tokens()` | Maintain authentication |
-
-### Data Flow
-
-```
-Xbox Live → pythonxbox → Integration → UC Remote Entity
-          ↓
-     [Gamertag]
-     [Presence State]
-     [Game Title]
-     [Game Artwork]
-```
-
----
-
-## 🛠️ Development
-
-### Project Structure
-
-```
-uc-intg-xbox-live/
-├── uc_intg_xbox_live/
-│   ├── __init__.py           # Version from driver.json
-│   ├── auth.py               # OAuth2 authentication
-│   ├── config.py             # Persistent configuration
-│   ├── driver.py             # Main integration driver
-│   ├── media_player_entity.py # Media player entity
-│   └── setup.py              # Setup flow handler
-├── driver.json               # Integration metadata
-├── requirements.txt          # Python dependencies
-├── Dockerfile                # Docker image
-├── docker-compose.yml        # Docker Compose config
-└── README.md                 # This file
-```
-
-### Key Dependencies
-
-```python
-ucapi==0.3.1              # UC integration framework
-python-xbox==0.1.0        # Xbox API wrapper
-xbox-webapi==2.1.0        # Xbox authentication
-httpx                     # Async HTTP client
-platformdirs==4.5.0       # Config directories
-```
-
-### Modify Update Interval
-
-Edit `uc_intg_xbox_live/driver.py`:
-
-```python
-UPDATE_INTERVAL_SECONDS = 60  # Change to desired seconds
-```
-
-**Recommendations:**
-- **30s** - More responsive, higher API load
-- **60s** - Balanced (default)
-- **120s** - Conservative, lower API load
-
-### Build Release
-
-```bash
-git tag v3.0.1
-git push origin v3.0.1
-# GitHub Actions builds automatically
-```
-
----
-
-## 🤝 Contributing
-
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing`)
-5. Open Pull Request
-
-### Reporting Issues
-
-[Report Bug](https://github.com/mase1981/uc-intg-xbox-live/issues) · [Request Feature](https://github.com/mase1981/uc-intg-xbox-live/issues)
-
-When reporting issues, please include:
-- Integration version
-- UC Remote firmware version
-- Xbox console model
-- Detailed error description
-- Relevant log excerpts
-
----
-
-## 💰 Support
-
-If you find this integration useful, please consider supporting its development:
-
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-pink?style=for-the-badge&logo=github)](https://github.com/sponsors/mase1981)
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/meirmiyara)
-[![PayPal](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/mmiyara)
-
-Your support helps maintain this integration and develop new features. Thank you! ❤️
-
----
-
-## 📄 License
-
-This project is licensed under the **Mozilla Public License 2.0** (MPL-2.0).
-
-See the [LICENSE](LICENSE) file for full details.
-
-```
-Copyright (c) 2025 Meir Miyara
-
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.
-```
-
----
-
-## 🙏 Credits & Acknowledgments
-
-### Developer
-- **Meir Miyara** - [LinkedIn](https://www.linkedin.com/in/meirmiyara/) | [GitHub](https://github.com/mase1981)
-
-### Special Thanks
-- **[bjw-s](https://github.com/bjw-s)** - Code assistance and identifying removal of GiantBomb dependency
-- **[Unfolded Circle](https://unfoldedcircle.com)** - For creating an amazing open platform
-- **[OpenXbox](https://github.com/OpenXbox)** - For xbox-webapi-python library
-- **UC Community** - For testing and feedback
-
-### Libraries & Frameworks
-- **[ucapi](https://github.com/unfoldedcircle/integration-python-library)** - Unfolded Circle Integration API
-- **[python-xbox](https://github.com/OpenXbox/xbox-webapi-python)** - Xbox Live API wrapper
-- **[xbox-webapi-python](https://github.com/OpenXbox/xbox-webapi-python)** - Xbox authentication
-
----
-
-## 📞 Support & Links
-
-### Getting Help
-- 🐛 [GitHub Issues](https://github.com/mase1981/uc-intg-xbox-live/issues)
-- 💬 [Discussions](https://github.com/mase1981/uc-intg-xbox-live/discussions)
-- 👥 [UC Community Forum](https://community.unfoldedcircle.com/)
-- 💬 [Discord Server](https://discord.gg/zGVYf58)
-
-### Related Projects
-- **[Xbox Integration](https://github.com/mase1981/uc-intg-xbox)** - Full Xbox console control
-- **[Fire TV Integration](https://github.com/mase1981/uc-intg-firetv)** - Fire TV control
-- **[WiiM Integration](https://github.com/mase1981/uc-intg-wiim)** - WiiM audio control
-
-### Resources
-- [UC Developer Documentation](https://github.com/unfoldedcircle/core-api)
-- [UC Integration Examples](https://github.com/unfoldedcircle)
-- [Xbox Live API Docs](https://github.com/OpenXbox/xbox-webapi-python)
-
----
-
-## ⚠️ Disclaimer
+## Disclaimer
 
 This is an **unofficial integration** and is not affiliated with, endorsed by, or connected to Microsoft Corporation, Xbox, or Unfolded Circle ApS.
 
@@ -531,14 +240,22 @@ This is an **unofficial integration** and is not affiliated with, endorsed by, o
 
 **Privacy Note:** This integration uses your Microsoft account credentials solely for Xbox Live API authentication. Credentials are never stored - only OAuth tokens are saved locally on your UC Remote.
 
+## Support & Community
+
+- **GitHub Issues**: [Report bugs and request features](https://github.com/mase1981/uc-intg-xbox-live/issues)
+- **GitHub Discussions**: [General discussion and support](https://github.com/mase1981/uc-intg-xbox-live/discussions)
+- **UC Community Forum**: [Unfolded Circle community](https://unfolded.community/)
+- **Discord**: [Unfolded Circle Discord](https://discord.gg/zGVYf58)
+- **Developer**: [Meir Miyara](https://github.com/mase1981)
+
+## Related Projects
+
+- **[Xbox Integration](https://github.com/mase1981/uc-intg-xbox)** - Full Xbox console control (RECOMMENDED)
+- **[Fire TV Integration](https://github.com/mase1981/uc-intg-firetv)** - Fire TV control
+- **[WiiM Integration](https://github.com/mase1981/uc-intg-wiim)** - WiiM audio control
+
 ---
 
-<div align="center">
+**Made with ❤️ for the Unfolded Circle and Xbox Gaming Communities**
 
-Made with ❤️ by [Meir Miyara](https://www.linkedin.com/in/meirmiyara/)
-
-⭐ Star this repo if you find it useful!
-
-[Report Bug](https://github.com/mase1981/uc-intg-xbox-live/issues) · [Request Feature](https://github.com/mase1981/uc-intg-xbox-live/issues) · [Discussions](https://github.com/mase1981/uc-intg-xbox-live/discussions)
-
-</div>
+**Thank You**: Meir Miyara
