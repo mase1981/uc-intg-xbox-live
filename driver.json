@@ -5,7 +5,7 @@
   "description": {
     "en": "Displays your currently playing Xbox game with artwork."
   },
-  "version": "3.0.0",
+  "version": "3.0.1",
   "developer": { "name": "Meir Miyara" },
   "min_core_api": "0.3.1",
   "setup_data_schema": {
