@@ -136,7 +136,7 @@ docker run -d --name uc-intg-xbox-live --restart unless-stopped --network host -
 3. Click **"Configure"** to begin setup:
 
 #### **Configuration:**
-- **Xbox Live Device ID**: Enter the ID from your Xbox console
+- **Xbox Network Device ID**: Enter the ID from your Xbox console
 - Click **Next**
 
 #### **Microsoft Authentication:**
